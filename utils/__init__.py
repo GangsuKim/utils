@@ -1,1 +1,1 @@
-from pickle_loder import load_pickle
+from loaders import load_pickle

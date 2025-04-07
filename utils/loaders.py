@@ -6,7 +6,21 @@ from pickle import Unpickler
 import os
 from tqdm import tqdm
 
-__all__ = ["load_pickle"]
+__all__ = ["load_pickle", "load_model"]
+
+# If python environment doesn't have torch, error will occur when call load_model
+try:
+    import torch
+    HAS_TORCH = True
+except ImportError:
+    HAS_TORCH = False
+
+def require_torch(func):
+    def wrapper(*args, **kwargs):
+        if not HAS_TORCH:
+            raise ImportError("PyTorch is not installed. Install it to use this function.")
+        return func(*args, **kwargs)
+    return wrapper
 
 '''
 Original code from humanize lib.
@@ -98,6 +112,13 @@ class TQDMBytesReader(object):
         _current_size = "%.2f" % _current_size
         return _current_size
 
+    # For torch.load()
+    def seek(self, offset, whence=0):
+        self.fd.seek(offset, whence)
+
+    # For torch.load()
+    def tell(self):
+        return self.fd.tell()
 
 def load_pickle(
         path_to_file: str,
@@ -121,5 +142,27 @@ def load_pickle(
 
     return data
 
+@require_torch
+def load_model(
+        path_to_file: str,
+        desc: str = None
+):
+    """
+    Load torch weight with tqdm bar
+        :param path_to_file: file path to .pth file
+        :param desc: description of tqdm bar
+        :return: model state_dict
+    """
+
+    if desc is None:
+        desc = 'Loading model'
+
+    with open(path_to_file, 'rb') as f:
+        total = os.path.getsize(path_to_file)
+        with TQDMBytesReader(f, total=total, desc=desc) as pbfd:
+            _state_dict = torch.load(pbfd, map_location='cpu')
+    return _state_dict
+
 if __name__ == '__main__':
     dummy = load_pickle('path_to_pickle_file/pickle.pkl', 'My pickle')
+    state_dict = load_pickle('path_to_torch_weight/weight.pth', 'My model')
