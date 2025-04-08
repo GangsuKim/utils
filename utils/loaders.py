@@ -6,7 +6,7 @@ from pickle import Unpickler
 import os
 from tqdm import tqdm
 
-__all__ = ["load_pickle", "load_model"]
+__all__ = ["pickle_load", "torch_load"]
 
 # If python environment doesn't have torch, error will occur when call load_model
 try:
@@ -120,7 +120,7 @@ class TQDMBytesReader(object):
     def tell(self):
         return self.fd.tell()
 
-def load_pickle(
+def pickle_load(
         path_to_file: str,
         desc: str = None
 ):
@@ -143,7 +143,7 @@ def load_pickle(
     return data
 
 @require_torch
-def load_model(
+def torch_load(
         path_to_file: str,
         desc: str = None
 ):
@@ -164,5 +164,5 @@ def load_model(
     return _state_dict
 
 if __name__ == '__main__':
-    dummy = load_pickle('path_to_pickle_file/pickle.pkl', 'My pickle')
-    state_dict = load_pickle('path_to_torch_weight/weight.pth', 'My model')
+    dummy = pickle_load('path_to_pickle_file/pickle.pkl', 'My pickle')
+    state_dict = torch_load('path_to_torch_weight/weight.pth', 'My model')
