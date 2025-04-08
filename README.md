@@ -3,13 +3,13 @@ Simple and useful codes for AI/DL python researches
 
 ### Pickle loader
 Pickle loader shows load status progress bar through tqdm.  
-Performs the same function as `pickle.load(f)`.
+Performs the same function as `pickle.load()`.
 
 How to use:  
 ```python
-from utils.loaders import load_pickle
+from utils.loaders import pickle_load
 
-data = load_pickle('./path_to_pickle/file.pkl', 'My pickle')
+data = pickle_load('./path_to_pickle/file.pkl', 'My pickle')
 ```
 
 ### Torch weight loader
@@ -18,7 +18,7 @@ Performs the same function as `torch.load()`.
 
 How to use:  
 ```python
-from utils.loaders import load_model
+from utils.loaders import torch_load
 
-state_dict = load_model('./path_to_torch_weight/file.pth', 'My model')
+state_dict = torch_load('./path_to_torch_weight/file.pth', 'My model')
 ```
